@@ -183,7 +183,7 @@ ruleTester.run('jsx-no-literals', rule, {
         class Comp1 extends Component {
           asdf() {}
           render() {
-            return <Foo bar={this.asdf} />;
+            return <Foo bar={this.asdf} class='xx' />;
           }
         }
       `,
@@ -260,6 +260,18 @@ ruleTester.run('jsx-no-literals', rule, {
         }
       `,
       options: [{noStrings: true, allowedStrings: ['   foo   ']}]
+    }, {
+      code: `
+        class Comp1 extends Component {
+          asdf() {}
+          render() {
+            const xx = 'xx';
+
+            return <Foo bar={this.asdf} class={xx} />;
+          }
+        }      `,
+      parser: parsers.BABEL_ESLINT,
+      options: [{noStrings: true, validateProps: true}]
     }
   ],
 
@@ -415,33 +427,33 @@ ruleTester.run('jsx-no-literals', rule, {
       errors: [{message: stringsMessage('`Test`')}]
     }, {
       code: '<Foo bar={`Test`} />',
-      options: [{noStrings: true}],
+      options: [{noStrings: true, validateProps: true}],
       errors: [{message: stringsMessage('`Test`')}]
     }, {
       code: '<Foo bar={`${baz}`} />',
-      options: [{noStrings: true}],
+      options: [{noStrings: true, validateProps: true}],
       errors: [{message: stringsMessage('`${baz}`')}]
     }, {
       code: '<Foo bar={`Test ${baz}`} />',
-      options: [{noStrings: true}],
+      options: [{noStrings: true, validateProps: true}],
       errors: [{message: stringsMessage('`Test ${baz}`')}]
     }, {
       code: '<Foo bar={`foo` + \'bar\'} />',
-      options: [{noStrings: true}],
+      options: [{noStrings: true, validateProps: true}],
       errors: [
         {message: stringsMessage('`foo`')},
         {message: stringsMessage('\'bar\'')}
       ]
     }, {
       code: '<Foo bar={`foo` + `bar`} />',
-      options: [{noStrings: true}],
+      options: [{noStrings: true, validateProps: true}],
       errors: [
         {message: stringsMessage('`foo`')},
         {message: stringsMessage('`bar`')}
       ]
     }, {
       code: '<Foo bar={\'foo\' + `bar`} />',
-      options: [{noStrings: true}],
+      options: [{noStrings: true, validateProps: true}],
       errors: [
         {message: stringsMessage('\'foo\'')},
         {message: stringsMessage('`bar`')}
@@ -456,8 +468,26 @@ ruleTester.run('jsx-no-literals', rule, {
       `,
       options: [{noStrings: true, allowedStrings: ['asd']}],
       errors: [
+        {message: stringsMessage('asdf')}
+      ]
+    }, {
+      code: `
+        class Comp1 extends Component {
+          render() {
+            return <div bar={'foo'}>asdf</div>
+          }
+        }
+      `,
+      options: [{noStrings: true, allowedStrings: ['asd'], validateProps: true}],
+      errors: [
         {message: stringsMessage('\'foo\'')},
         {message: stringsMessage('asdf')}
+      ]
+    }, {
+      code: '<Foo bar={\'bar\'} />',
+      options: [{noStrings: true, validateProps: true}],
+      errors: [
+        {message: stringsMessage('\'bar\'')}
       ]
     }
   ]
