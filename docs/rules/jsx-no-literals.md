@@ -30,12 +30,12 @@ There are two options:
 
 * `noStrings`(`false` default) - Enforces no string literals used as children, wrapped or unwrapped.
 * `allowedStrings` - An array of unique string values that would otherwise warn, but will be ignored.
-* `validateProps`(`false` default) - Enforces no literals used in props, wrapped or unwrapped.
+* `ignoreProps`(`false` default) - When `true` the rule ignores literals used in props, wrapped or unwrapped.
 
 To use, you can specify as follows:
 
 ```js
-"react/jsx-no-literals": [<enabled>, {"noStrings": true, "allowedStrings": ["allowed"], "validateProps": true}]
+"react/jsx-no-literals": [<enabled>, {"noStrings": true, "allowedStrings": ["allowed"], "ignoreProps": false}]
 ```
 
 In this configuration, the following are considered warnings:
